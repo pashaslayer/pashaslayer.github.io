@@ -6,7 +6,7 @@ export default function About() {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">About Me</h1>
           <div className="prose prose-lg dark:prose-invert max-w-none">
             <p className="text-gray-700 dark:text-gray-300 mb-6">
-              Hello! I'm a passionate developer who loves building amazing things with code.
+              Hello! I&apos;m a passionate developer who loves building amazing things with code.
             </p>
             <p className="text-gray-700 dark:text-gray-300 mb-6">
               This is my personal space on the web where I share my projects, thoughts, and experiences.

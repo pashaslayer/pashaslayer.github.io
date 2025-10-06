@@ -9,7 +9,7 @@ export default function Home() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="text-xl font-bold text-gray-800 dark:text-white">
-              Pavel's GitHub Pages
+              Pavel&apos;s GitHub Pages
             </div>
             
             {/* Dropdown Navigation */}
@@ -50,8 +50,8 @@ export default function Home() {
           <div className="mb-8">
             <div className="relative w-32 h-32 mx-auto mb-6">
               <Image
-                src="/profile-picture.jpg" // Ersetze mit deinem tatsächlichen Bildpfad
-                alt="Marcel's Profile Picture"
+                src="/profile-picture.jpg" // Replace with your actual image path
+                alt="Profile Picture"
                 width={128}
                 height={128}
                 className="rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
@@ -62,16 +62,16 @@ export default function Home() {
 
           {/* Username and Title */}
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4">
-            @nigga
+            @pashaslayer
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8">
-            AI & Full-Stack Developer
+            developer
           </p>
 
           {/* Bio */}
           <div className="max-w-2xl mx-auto mb-12">
             <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-              Welcome to my GitHub Pages! I'm passionate about AI, web development, and creating 
+              Welcome to my GitHub Pages! I&apos;m passionate about AI, web development, and creating 
               innovative solutions. I love working with Next.js, React, and exploring new technologies 
               in the AI space.
             </p>
@@ -130,7 +130,7 @@ export default function Home() {
               <a href="https://github.com/pashaslayer" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 GitHub
               </a>
-              <a href="https://www.linkedin.com/in/pavel-khakhlou-b07310327" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <a href="https://www.linkedin.com/in/pavel-khakhlou-b07310327/" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 LinkedIn
               </a>
             </div>
