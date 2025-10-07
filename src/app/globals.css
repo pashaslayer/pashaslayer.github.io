@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 :root {
   --background: #ffffff;
@@ -19,10 +24,47 @@
   }
 }
 
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) translateX(-5vw);
+  }
+  100% {
+    transform: translateY(100vh) translateX(5vw);
+  }
+}
+
+@keyframes sway-left-to-right {
+  0% {
+    transform: translateY(-10vh) translateX(-10vw);
+  }
+  100% {
+    transform: translateY(100vh) translateX(10vw);
+  }
+}
+
+@keyframes sway-right-to-left {
+  0% {
+    transform: translateY(-10vh) translateX(10vw);
+  }
+  100% {
+    transform: translateY(100vh) translateX(-10vw);
+  }
+}
+
+
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background-color: #1a1a1a;
+  color: #e8644f;
+  font-family: 'Permanent Marker', cursive;
+  /* Hide the default scrollbar for Webkit browsers (Chrome, Safari) */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide the default scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide the default scrollbar for IE/Edge */
+  -ms-overflow-style: none; 
 }
 
 /* Smooth scrolling for better user experience */
