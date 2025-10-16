@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 
-// Helper and constants
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 const leverFrames = ['/lever-1.png', '/lever-2.png', '/lever-3.png', '/lever-4.png'];
 const menuButtonImage = '/menu-button.png';
@@ -24,7 +24,8 @@ const LightningScrollbar = ({ scrollProgress }) => {
   );
 };
 
-export default function Layout({ children }) {
+// MODIFIED: Accept a new 'onLeverToggle' prop with a default empty function
+export default function Layout({ children, onLeverToggle = () => {} }) {
   const [scroll, setScroll] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [theme, setTheme] = useState('dark');
@@ -40,6 +41,10 @@ export default function Layout({ children }) {
 
   const handleLeverToggle = async () => {
     if (isAnimating) return;
+    
+    // MODIFIED: Call the function passed from the parent page
+    onLeverToggle();
+
     setIsAnimating(true);
     const isTurningOn = theme === 'dark';
     if (isTurningOn) {
@@ -70,8 +75,7 @@ export default function Layout({ children }) {
   const currentTheme = themeClasses[theme];
   const currentLeverImage = leverFrames[currentFrame];
 
-  // --- NEW: Define the accent color based on the theme ---
-  const accentColor = theme === 'dark' ? '#9f86c0' : '#374151'; // Violet for dark, gray-700 for light
+  const accentColor = theme === 'dark' ? '#9f86c0' : '#374151';
 
   return (
     <>
@@ -90,7 +94,6 @@ export default function Layout({ children }) {
         </div>
       </div>
       
-      {/* --- MODIFIED: Added a style prop to set the CSS variable --- */}
       <div
         style={{ '--accent-color': accentColor }}
         className={`min-h-screen font-sans text-2xl p-6 flex flex-col transition-colors duration-500 ${currentTheme.bg} ${currentTheme.text}`}
@@ -103,7 +106,7 @@ export default function Layout({ children }) {
         {children}
 
         <footer className={`flex justify-between items-center text-xl transition-colors duration-500 mt-auto pt-12 ${currentTheme.altText}`}>
-          <p>Pavel Khakhlou</p>
+          <p></p>
           <div className="flex space-x-8">
             <Link href="https://github.com/pashaslayer" className={`transition-colors ${currentTheme.hover}`}>Github</Link>
             <Link href="https://www.linkedin.com/in/pavel-khakhlou-b07310327/" className={`transition-colors ${currentTheme.hover}`}>LinkedIn</Link>

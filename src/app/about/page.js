@@ -6,7 +6,7 @@ export default function About() {
       <main className="flex-grow flex flex-col justify-center items-center text-center px-4">
         <h1 className="text-7xl tracking-wider mb-12">About Me</h1>
         <div className="max-w-2xl mx-auto space-y-6 text-2xl">
-          <p>Hello! I&apos;m Pavel. <span style={{ marginRight: '200px' }}></span>Nice to have you! </p>
+          <p>Hello! I&apos;m Pavel. <span style={{ marginRight: '170px' }}></span>Welcome to my page. </p>
           <p>This is my personal space on the web where I share my projects, thoughts, and experiences.</p>
           
           <h2 className="text-4xl tracking-wider pt-8">Skills & Technologies</h2>
