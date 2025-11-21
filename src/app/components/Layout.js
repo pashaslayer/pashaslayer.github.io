@@ -252,11 +252,11 @@ export default function Layout({ children, onLeverToggle = () => {} }) {
         <footer
           className={`flex justify-between items-end text-xl transition-colors duration-500 mt-auto pt-12 ${currentTheme.altText}`}
         >
-          <div className="flex flex-col max-w-md text-base pb-2 min-h-[80px] justify-end">
+          <div className="flex flex-col max-w-md text-sm pb-2 min-h-[60px] justify-end">
             {quote.content && (
               <div className="animate-in fade-in duration-1000">
                 <p className="italic opacity-80">&quot;{quote.content}&quot;</p>
-                <p className="text-sm mt-1 opacity-60">— {quote.author}</p>
+                <p className="text-xs mt-1 opacity-60">— {quote.author}</p>
               </div>
             )}
           </div>
