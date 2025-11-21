@@ -2,7 +2,7 @@ import Layout from "../components/Layout";
 
 const projects = [
   { title: "SportsMap", description: "Web-based platform designed to help users organize, join, and manage group sports events", tech: ["Vue.js", "Python", "PHP", "JavaScript" ], link: "#" },
-  { title: "Helfit", description: "Coming soon...", tech: ["?", "?", "?", "?", "?"], link: "#" }
+  { title: "Gearly", description: "Your personal mobile gym assistant", tech: ["Dart", "JavaScript"], link: "#" }
 ];
 
 export default function Projects() {
