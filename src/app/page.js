@@ -391,7 +391,7 @@ export default function Home() {
           {textElements.map((el) => (
             <div
               key={el.id}
-              className="absolute text-white font-mono text-xl sm:text-3xl typing-cursor"
+              className="absolute text-white font-mono text-base sm:text-3xl typing-cursor"
               style={{ top: el.top, left: el.left }}
             >
               {el.text}
@@ -403,18 +403,20 @@ export default function Home() {
       {/* --- STAGE 2: TRANSITION --- */}
       {stage === "transition" && (
         <div className="flex items-center justify-center h-screen w-full bg-white transition-all duration-1000">
-          <div className="text-9xl animate-bounce">❤️</div>
+          <div className="text-7xl sm:text-9xl animate-bounce">❤️</div>
         </div>
       )}
 
       {/* --- STAGE 3: PROPOSAL --- */}
       {stage === "proposal" && (
         <div className="relative w-full h-screen flex flex-col items-center justify-center bg-pink-50 text-center p-4">
-          <h1 className="text-5xl font-bold text-red-600 mb-12">Станешь моей на День всех влюблённых?</h1>
-          <div className="flex gap-8 items-center justify-center w-full h-64 relative">
+          <h1 className="text-3xl sm:text-5xl font-bold text-red-600 mb-8 sm:mb-12 leading-tight">
+            Станешь моей на День всех влюблённых?
+          </h1>
+          <div className="flex gap-4 sm:gap-8 items-center justify-center w-full h-64 relative">
             <button
               onClick={handleYes}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-full text-2xl shadow-lg transform hover:scale-110 transition-all z-10"
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 sm:py-4 sm:px-12 rounded-full text-lg sm:text-2xl shadow-lg transform hover:scale-110 transition-all z-10 min-w-[120px]"
             >
               ДА
             </button>
@@ -427,7 +429,7 @@ export default function Home() {
                 left: noBtnPos.left,
                 transition: "all 0.1s ease",
               }}
-              className="bg-gray-400 text-white font-bold py-4 px-12 rounded-full text-2xl z-10"
+              className="bg-gray-400 text-white font-bold py-2 px-6 sm:py-4 sm:px-12 rounded-full text-lg sm:text-2xl z-10 min-w-[120px]"
             >
               НЕТ
             </button>
@@ -437,15 +439,17 @@ export default function Home() {
 
       {/* --- STAGE 4: GREETING --- */}
       {stage === "greeting" && (
-        <div className="text-center animate-in fade-in zoom-in duration-500 p-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-pink-600 mb-8">Привет, любимая! ❤️</h1>
-          <p className="text-xl md:text-2xl text-gray-700 mb-8">
+        <div className="text-center animate-in fade-in zoom-in duration-500 p-4 sm:p-8">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-pink-600 mb-4 sm:mb-8">
+            Привет, любимая! ❤️
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-6 sm:mb-8">
             Приглашаю тебя на шоу!<br />
             Тебе нужно собрать всех пятерых котиков, чтобы победить... 🐱
           </p>
           <button
             onClick={() => setStage("quiz")}
-            className="bg-pink-500 text-white py-3 px-8 rounded-lg text-xl hover:bg-pink-600 transition"
+            className="bg-pink-500 text-white py-2 px-6 sm:py-3 sm:px-8 rounded-lg text-lg sm:text-xl hover:bg-pink-600 transition"
           >
             Я согласна...
           </button>
@@ -457,106 +461,114 @@ export default function Home() {
         <div className="relative w-full h-screen bg-gradient-to-b from-blue-900 to-blue-700 overflow-hidden flex flex-col">
           {showResetMsg && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in">
-              <div className="text-center">
-                <div className="text-9xl mb-4">😿</div>
-                <h2 className="text-4xl font-bold text-red-500 mb-2">WRONG ANSWER!</h2>
-                <p className="text-white text-xl">Starting over...</p>
+              <div className="text-center p-4">
+                <div className="text-7xl sm:text-9xl mb-4">😿</div>
+                <h2 className="text-3xl sm:text-4xl font-bold text-red-500 mb-2">WRONG ANSWER!</h2>
+                <p className="text-white text-lg sm:text-xl">Starting over...</p>
               </div>
             </div>
           )}
 
-          <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 flex flex-row items-center gap-4 bg-black/30 px-8 py-3 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
-            <p className="text-white text-xs font-bold tracking-widest mr-2 opacity-80">SCORE</p>
+          {/* Score indicator - responsive sizes */}
+          <div className="absolute top-3 sm:top-6 left-1/2 transform -translate-x-1/2 z-20 flex flex-row items-center gap-2 sm:gap-4 bg-black/30 px-4 sm:px-8 py-1 sm:py-3 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
+            <p className="text-white text-[10px] sm:text-xs font-bold tracking-widest mr-1 sm:mr-2 opacity-80">SCORE</p>
             {results.map((status, i) => (
-              <div key={i} className="w-10 h-10 flex items-center justify-center transition-all duration-500">
+              <div key={i} className="w-6 h-6 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-500">
                 {status === "correct" ? (
                   <div className="relative w-full h-full drop-shadow-[0_0_10px_rgba(255,200,200,0.8)] animate-pulse">
                     <Image src="/kitten.png" width={40} height={40} className="object-contain" alt="kitten" unoptimized />
                   </div>
                 ) : status === "wrong" ? (
-                  <span className="text-2xl drop-shadow-md">❌</span>
+                  <span className="text-lg sm:text-2xl drop-shadow-md">❌</span>
                 ) : (
-                  <div className="w-3 h-3 rounded-full bg-white/30"></div>
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white/30"></div>
                 )}
               </div>
             ))}
           </div>
 
-          <div className="flex-1 flex items-center justify-center gap-4 md:gap-12 w-full max-w-7xl mx-auto px-4 pb-48">
-            <div className="flex flex-col items-center justify-center w-1/4 md:w-1/6 animate-breathing z-10">
-              <div className="relative w-full flex justify-center">
-                <Image src="/player1.png" width={200} height={300} className="object-contain drop-shadow-2xl" alt="Player 1" unoptimized />
+          {/* Main game area: stacked on mobile, row on desktop */}
+          <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-12 w-full max-w-7xl mx-auto px-4 pb-16 lg:pb-48 pt-20 lg:pt-0">
+            {/* Left player - order 1 on mobile, stays left on desktop */}
+            <div className="flex flex-col items-center justify-center w-full lg:w-1/6 animate-breathing z-10 order-1 lg:order-none">
+              <div className="relative w-full flex justify-center max-w-[150px] lg:max-w-none">
+                <Image src="/player1.png" width={200} height={300} className="object-contain drop-shadow-2xl w-full h-auto" alt="Player 1" unoptimized />
               </div>
-              <div className="bg-blue-600 text-white text-center px-4 py-1 mt-2 rounded border border-white font-bold w-full max-w-[150px]">
+              <div className="bg-blue-600 text-white text-center px-2 py-0.5 sm:px-4 sm:py-1 mt-1 sm:mt-2 rounded border border-white font-bold text-sm sm:text-base w-full max-w-[120px] sm:max-w-[150px]">
                 Лиса
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center w-1/3 md:w-1/4 relative z-0">
-              <div className={`relative z-20 -mb-10 ${isHostTalking ? "animate-shake" : ""}`}>
-                <Image src="/host.png" width={220} height={220} className="object-contain" alt="Host" priority unoptimized />
+            {/* Wheel + host - order 2 on mobile, center on desktop */}
+            <div className="flex flex-col items-center justify-center w-full lg:w-1/3 relative z-0 order-2 lg:order-none">
+              <div className={`relative z-20 -mb-6 lg:-mb-10 ${isHostTalking ? "animate-shake" : ""}`}>
+                <Image src="/host.png" width={220} height={220} className="object-contain w-28 sm:w-36 lg:w-[220px] h-auto" alt="Host" priority unoptimized />
               </div>
               <div className="relative z-10">
                 <div className="absolute left-1/2 -translate-x-1/2 top-[-15px] z-30 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[30px] border-t-red-600 drop-shadow-lg"></div>
-                <div className="w-64 h-64 md:w-80 md:h-80 rounded-full border-8 border-yellow-500 bg-white/90 shadow-[0_0_40px_rgba(255,255,255,0.4)] overflow-hidden flex items-center justify-center">
+                <div className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full border-4 sm:border-8 border-yellow-500 bg-white/90 shadow-[0_0_40px_rgba(255,255,255,0.4)] overflow-hidden flex items-center justify-center">
                   <div
                     style={{
                       transform: `rotate(${wheelRotation}deg)`,
                       transition: isSpinning ? "transform 6000ms cubic-bezier(0.25, 0.1, 0.25, 1)" : "none",
                     }}
                   >
-                    <Image src="/wheel.png" width={320} height={320} className="object-cover" alt="Wheel" priority unoptimized />
+                    <Image src="/wheel.png" width={320} height={320} className="object-cover w-full h-full" alt="Wheel" priority unoptimized />
                   </div>
                 </div>
               </div>
+
+              {/* Spin button - now positioned normally, not absolute */}
               {!isSpinning && !isHostTalking && !showQuestionModal && !showResetMsg && (
                 <button
                   onClick={initiateSpinSequence}
-                  className="absolute bottom-[-50px] z-30 bg-gradient-to-b from-yellow-300 to-yellow-500 text-red-800 font-extrabold text-lg md:text-2xl py-3 px-10 rounded-full border-b-8 border-yellow-700 shadow-2xl hover:translate-y-1 active:border-b-0 active:translate-y-2 transition-all animate-pulse"
+                  className="mt-4 sm:mt-6 z-30 bg-gradient-to-b from-yellow-300 to-yellow-500 text-red-800 font-extrabold text-base sm:text-lg lg:text-2xl py-2 px-6 sm:py-3 sm:px-10 rounded-full border-b-4 sm:border-b-8 border-yellow-700 shadow-2xl hover:translate-y-1 active:border-b-0 active:translate-y-2 transition-all animate-pulse"
                 >
                   Крутить барабан
                 </button>
               )}
               {isHostTalking && (
-                <div className="absolute bottom-[-40px] z-30 bg-white/80 px-4 py-2 rounded-full font-bold text-blue-800 animate-bounce">
+                <div className="mt-4 sm:mt-6 z-30 bg-white/80 px-3 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-blue-800 text-sm sm:text-base animate-bounce">
                   ... 🎤
                 </div>
               )}
             </div>
 
-            <div className="flex flex-col items-center justify-center w-1/4 md:w-1/6 animate-breathing z-10" style={{ animationDelay: "1s" }}>
-              <div className="relative w-full flex justify-center">
-                <Image src="/player2.png" width={200} height={300} className="object-contain drop-shadow-2xl" alt="Player 2" unoptimized />
+            {/* Right player - order 3 on mobile, stays right on desktop */}
+            <div className="flex flex-col items-center justify-center w-full lg:w-1/6 animate-breathing z-10 order-3 lg:order-none" style={{ animationDelay: "1s" }}>
+              <div className="relative w-full flex justify-center max-w-[150px] lg:max-w-none">
+                <Image src="/player2.png" width={200} height={300} className="object-contain drop-shadow-2xl w-full h-auto" alt="Player 2" unoptimized />
               </div>
-              <div className="bg-red-600 text-white text-center px-4 py-1 mt-2 rounded border border-white font-bold w-full max-w-[150px]">
+              <div className="bg-red-600 text-white text-center px-2 py-0.5 sm:px-4 sm:py-1 mt-1 sm:mt-2 rounded border border-white font-bold text-sm sm:text-base w-full max-w-[120px] sm:max-w-[150px]">
                 Ирбис
               </div>
             </div>
           </div>
 
+          {/* Question modal - responsive */}
           {showQuestionModal && (
             <div
               style={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
               className="z-50 w-full animate-in slide-in-from-bottom duration-500"
             >
-              <div className="w-full bg-white/95 backdrop-blur-3xl border-t-8 border-yellow-400 p-6 shadow-[0_-10px_60px_rgba(0,0,0,0.6)] flex flex-col items-center">
-                <div className="absolute -top-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-2 rounded-full font-bold uppercase tracking-widest text-sm shadow-xl border-2 border-white">
+              <div className="w-full bg-white/95 backdrop-blur-3xl border-t-8 border-yellow-400 p-4 sm:p-6 shadow-[0_-10px_60px_rgba(0,0,0,0.6)] flex flex-col items-center">
+                <div className="absolute -top-4 sm:-top-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 sm:px-8 py-1 sm:py-2 rounded-full font-bold uppercase tracking-widest text-xs sm:text-sm shadow-xl border-2 border-white">
                   Question {currentQuestion + 1}
                 </div>
 
-                <div className="w-full max-w-6xl flex flex-col items-center gap-6">
-                  <h2 className="text-gray-900 text-2xl md:text-4xl font-extrabold text-center leading-tight">
+                <div className="w-full max-w-6xl flex flex-col items-center gap-4 sm:gap-6 mt-4 sm:mt-2">
+                  <h2 className="text-gray-900 text-xl sm:text-2xl md:text-4xl font-extrabold text-center leading-tight">
                     {questions[currentQuestion].question}
                   </h2>
 
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 w-full">
                     {questions[currentQuestion].answers.map((ans, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleAnswer(ans.correct)}
-                        className="w-full relative group overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-white border-2 border-blue-200 p-5 transition-all duration-200 hover:border-blue-500 hover:shadow-lg active:scale-95 flex items-center justify-center"
+                        className="w-full relative group overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-50 to-white border-2 border-blue-200 p-3 sm:p-5 transition-all duration-200 hover:border-blue-500 hover:shadow-lg active:scale-95 flex items-center justify-center"
                       >
-                        <span className="relative z-10 text-blue-900 font-bold text-xl text-center">
+                        <span className="relative z-10 text-blue-900 font-bold text-sm sm:text-base md:text-xl text-center">
                           {ans.text}
                         </span>
                       </button>
@@ -605,12 +617,12 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Center Card */}
-          <div className="z-20 text-center bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border-4 border-pink-300 max-w-5xl mx-4 relative">
-            <h1 className="text-4xl md:text-6xl font-bold text-pink-600 mb-4">Приз в студию! 💖</h1>
-            <p className="text-2xl text-gray-700 mb-8">Мы идеальная пара! Просто посмотри на это!</p>
+          {/* Center Card - responsive */}
+          <div className="z-20 text-center bg-white/95 backdrop-blur-xl p-4 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl border-4 border-pink-300 max-w-5xl mx-4 relative">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-pink-600 mb-2 sm:mb-4">Приз в студию! 💖</h1>
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 sm:mb-8">Мы идеальная пара! Просто посмотри на это!</p>
 
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-4 sm:mb-8">
               {Array.from({ length: 15 }).map((_, i) => (
                 <div key={i} className="transform transition hover:scale-125 duration-300">
                   <Image
@@ -618,16 +630,16 @@ export default function Home() {
                     width={80}
                     height={80}
                     alt="Memory"
-                    className="rounded-lg shadow-md border-2 border-pink-300 object-cover aspect-square"
+                    className="rounded-lg shadow-md border-2 border-pink-300 object-cover aspect-square w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20"
                     unoptimized
                   />
                 </div>
               ))}
             </div>
 
-            <div className="animate-bounce mt-4">
-              <Image src="/flowers.png" width={300} height={300} alt="Flowers" className="mx-auto drop-shadow-2xl" unoptimized />
-              <p className="text-3xl font-permanent-marker text-red-500 mt-4">Мой тебе дигитальный букет, люблю тебя! 🌹</p>
+            <div className="animate-bounce mt-2 sm:mt-4">
+              <Image src="/flowers.png" width={300} height={300} alt="Flowers" className="mx-auto drop-shadow-2xl w-40 sm:w-60 md:w-80 h-auto" unoptimized />
+              <p className="text-xl sm:text-2xl md:text-3xl font-permanent-marker text-red-500 mt-2 sm:mt-4">Мой тебе дигитальный букет, люблю тебя! 🌹</p>
             </div>
           </div>
         </div>
