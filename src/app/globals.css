@@ -8,10 +8,15 @@
   --background-end-rgb: 0, 0, 0;
 }
 
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: black;
-  overflow: hidden; /* Prevent scrolling */
+  overflow: hidden; /* Prevent scrolling usually */
 }
 
 /* The Matrix/Undertale style text cursor */
@@ -22,28 +27,4 @@ body {
 
 @keyframes blink {
   50% { opacity: 0; }
-}
-
-/* Floating animation for the background photos at the end */
-@keyframes floatUp {
-  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-}
-
-.floating-photo {
-  position: absolute;
-  bottom: -200px;
-  animation: floatUp 15s linear infinite;
-  opacity: 0.8;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
-.animate-trajectory {
-  animation-name: trajectory;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  animation-fill-mode: both; /* Apply 0% keyframe styles before animation starts */
 }
