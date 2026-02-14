@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Pashaslayer",
+  title: "C Днем Влюбленных!",
   description: "Personal portfolio and blog hosted on GitHub Pages",
 };
 

@@ -59,6 +59,15 @@ const questions = [
       { text: "Какао", correct: false },
     ],
   },
+  // 6th Question (Special Tension Question)
+  {
+    question: "Лиса или Ирбис?.....",
+    answers: [
+      { text: "Лиса (прости ирбис)..", correct: false },
+      { text: "Ирбис (прости лиса)..", correct: false },
+      // The 3rd option is injected via logic
+    ],
+  },
 ];
 
 export default function Home() {
@@ -66,7 +75,7 @@ export default function Home() {
 
   // Intro
   const [textElements, setTextElements] = useState([]);
-  const textElementsRef = useRef([]); // synchronous storage
+  const textElementsRef = useRef([]);
   const sentenceIdxRef = useRef(0);
   const charIdxRef = useRef(0);
   const typingTimeoutRef = useRef(null);
@@ -77,7 +86,11 @@ export default function Home() {
 
   // Quiz
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [results, setResults] = useState([null, null, null, null, null]);
+  const [results, setResults] = useState([null, null, null, null, null, null]);
+
+  // Special Question 6 State
+  const [timerMs, setTimerMs] = useState(15000); // Store in Milliseconds
+  const [showThirdBtn, setShowThirdBtn] = useState(false);
 
   // Wheel & Host
   const [wheelRotation, setWheelRotation] = useState(0);
@@ -95,7 +108,9 @@ export default function Home() {
   const wheelAudioRef = useRef(null);
   const hostAudioRef = useRef(null);
   const finalAudioRef = useRef(null);
-  const trueAudioRef = useRef(null); // for correct answer
+  const trueAudioRef = useRef(null);
+  const winningAudioRef = useRef(null);
+  const timerLoopAudioRef = useRef(null); // New Timer Audio
 
   // --- 1. INTRO: TYPING EFFECT ---
   useEffect(() => {
@@ -198,7 +213,7 @@ export default function Home() {
     }
   }, [stage]);
 
-  // --- 3. FINAL MUSIC & PHOTO GENERATION (now used for result stage only) ---
+  // --- 3. FINAL MUSIC & PHOTO GENERATION ---
   useEffect(() => {
     if (stage === "result") {
       if (finalAudioRef.current) {
@@ -246,7 +261,7 @@ export default function Home() {
           rEnd: `${Math.random() * 360 + 360}deg`,
           duration: `${Math.random() * 20 + 15}s`,
           delay: `${Math.random() * 15}s`,
-          size: `${Math.random() * 100 + 50}px`, // Slightly smaller min size for mobile
+          size: `${Math.random() * 100 + 50}px`,
         };
       });
 
@@ -254,7 +269,66 @@ export default function Home() {
     }
   }, [stage]);
 
-  // --- 4. PROPOSAL LOGIC ---
+  // --- 4. TIMER LOGIC FOR QUESTION 6 (WITH MILLISECONDS) ---
+  useEffect(() => {
+    let interval;
+    if (showQuestionModal && currentQuestion === 5) {
+      setTimerMs(15000);
+      setShowThirdBtn(false);
+
+      // Start Audio Loop
+      if (timerLoopAudioRef.current) {
+        timerLoopAudioRef.current.currentTime = 0;
+        timerLoopAudioRef.current.play().catch(() => {});
+      }
+
+      const startTime = Date.now();
+      const duration = 15000;
+
+      interval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, duration - elapsed);
+        
+        setTimerMs(remaining);
+
+        if (remaining <= 0) {
+          clearInterval(interval);
+          setShowThirdBtn(true);
+          // Stop Audio
+          if (timerLoopAudioRef.current) {
+            timerLoopAudioRef.current.pause();
+          }
+        }
+      }, 30); // Update roughly every 30ms for smooth visuals
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+      // Cleanup audio if component unmounts or state changes early
+      if (timerLoopAudioRef.current) {
+        timerLoopAudioRef.current.pause();
+      }
+    };
+  }, [showQuestionModal, currentQuestion]);
+
+  // Helper to format time as SS:MS
+  const formatTime = (ms) => {
+    const seconds = Math.floor(ms / 1000);
+    // Get first two digits of milliseconds
+    const centiseconds = Math.floor((ms % 1000) / 10);
+    return `${seconds < 10 ? '0' : ''}${seconds}:${centiseconds < 10 ? '0' : ''}${centiseconds}`;
+  };
+
+  // Helper to calculate color gradient from White to Red based on remaining time
+  const getTimerColor = (ms) => {
+    const ratio = Math.max(0, ms / 15000);
+    // When ratio is 1 (start), Green/Blue are 255 -> White (255,255,255)
+    // When ratio is 0 (end), Green/Blue are 0 -> Red (255,0,0)
+    const gb = Math.floor(255 * ratio);
+
+    return `rgb(255, ${gb}, ${gb})`;
+  };
+
+  // --- 5. PROPOSAL LOGIC ---
   const handleNoHover = () => {
     const x = Math.random() * 80 + 10;
     const y = Math.random() * 80 + 10;
@@ -265,7 +339,7 @@ export default function Home() {
     setStage("greeting");
   };
 
-  // --- 5. GAME SHOW LOGIC ---
+  // --- 6. GAME SHOW LOGIC ---
   const initiateSpinSequence = () => {
     if (isSpinning || isHostTalking) return;
     setIsHostTalking(true);
@@ -301,17 +375,37 @@ export default function Home() {
   const resetGame = () => {
     setShowResetMsg(false);
     setCurrentQuestion(0);
-    setResults([null, null, null, null, null]);
+    setResults([null, null, null, null, null, null]);
+    setTimerMs(15000);
+    setShowThirdBtn(false);
     setStage("quiz");
   };
 
   const handleAnswer = (isCorrect) => {
+    // Logic for the final timer question (Dummy Buttons)
+    if (currentQuestion === 5 && !isCorrect) {
+      return; // Do nothing
+    }
+
     const newResults = [...results];
     if (isCorrect) {
-      if (trueAudioRef.current) {
-        trueAudioRef.current.currentTime = 0;
-        trueAudioRef.current.play().catch((e) => {});
+      // Play sound
+      if (currentQuestion === 5) {
+        // Ensure timer audio is off
+        if (timerLoopAudioRef.current) {
+            timerLoopAudioRef.current.pause();
+        }
+        if (winningAudioRef.current) {
+          winningAudioRef.current.currentTime = 0;
+          winningAudioRef.current.play().catch((e) => {});
+        }
+      } else {
+        if (trueAudioRef.current) {
+          trueAudioRef.current.currentTime = 0;
+          trueAudioRef.current.play().catch((e) => {});
+        }
       }
+
       newResults[currentQuestion] = "correct";
       setResults(newResults);
       setShowQuestionModal(false);
@@ -319,10 +413,11 @@ export default function Home() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        // Game successfully won -> show video first, then result
-        setStage("video");
+        // Game successfully won -> Show custom video first, then spongebob
+        setStage("custom-video");
       }
     } else {
+      // Wrong answer logic for Questions 1-5
       if (buzzerAudioRef.current) {
         buzzerAudioRef.current.currentTime = 0;
         buzzerAudioRef.current.play().catch((e) => console.error("Buzzer play failed", e));
@@ -350,6 +445,8 @@ export default function Home() {
       <audio ref={hostAudioRef} src="/host.mp3" onEnded={startWheelSpin} />
       <audio ref={finalAudioRef} src="/final_music.mp3" loop />
       <audio ref={trueAudioRef} src="/true.mp3" />
+      <audio ref={winningAudioRef} src="/winning.mp3" />
+      <audio ref={timerLoopAudioRef} src="/timer.mp3" loop />
 
       {/* --- STAGE 1: INTRO --- */}
       {stage === "intro" && (
@@ -409,7 +506,7 @@ export default function Home() {
           <h1 className="text-3xl md:text-6xl font-bold text-pink-600 mb-6 md:mb-8">Привет, любимая! ❤️</h1>
           <p className="text-lg md:text-2xl text-gray-700 mb-8">
             Приглашаю тебя на шоу!<br />
-            Тебе нужно собрать всех пятерых котиков, чтобы победить... 🐱
+            Тебе нужно собрать всех котиков, чтобы победить... 🐱
           </p>
           <button
             onClick={() => setStage("quiz")}
@@ -433,7 +530,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* Scoreboard - Scaled for mobile */}
+          {/* Scoreboard */}
           <div className="absolute top-4 md:top-6 left-1/2 transform -translate-x-1/2 z-20 flex flex-row items-center gap-2 md:gap-4 bg-black/30 px-4 md:px-8 py-2 md:py-3 rounded-full backdrop-blur-sm border border-white/20 shadow-lg scale-90 md:scale-100 origin-top">
             <p className="text-white text-[10px] md:text-xs font-bold tracking-widest mr-1 md:mr-2 opacity-80">SCORE</p>
             {results.map((status, i) => (
@@ -451,10 +548,10 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Main Stage Area - Responsive Flex Row */}
+          {/* Main Stage Area */}
           <div className="flex-1 flex items-center justify-center w-full max-w-7xl mx-auto pb-32 md:pb-48 px-2 relative top-8 md:top-0">
             
-            {/* Player 1 - Left */}
+            {/* Player 1 */}
             <div className="flex flex-col items-center justify-center w-[25%] md:w-1/6 animate-breathing z-10">
               <div className="relative w-full flex justify-center">
                 <Image src="/player1.png" width={200} height={300} className="object-contain drop-shadow-2xl w-full h-auto max-w-[150px] md:max-w-[200px]" alt="Player 1" unoptimized />
@@ -464,14 +561,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Host & Wheel - Center (Variable Width) */}
+            {/* Host & Wheel */}
             <div className="flex flex-col items-center justify-center w-[45%] md:w-1/4 relative z-0 mx-1 md:mx-0">
-              {/* Host */}
               <div className={`relative z-20 -mb-6 md:-mb-10 ${isHostTalking ? "animate-shake" : ""}`}>
                 <Image src="/host.png" width={220} height={220} className="object-contain w-[120px] md:w-[220px] h-auto" alt="Host" priority unoptimized />
               </div>
               
-              {/* Wheel Container */}
               <div className="relative z-10">
                 <div className="absolute left-1/2 -translate-x-1/2 top-[-10px] md:top-[-15px] z-30 w-0 h-0 border-l-[10px] md:border-l-[15px] border-l-transparent border-r-[10px] md:border-r-[15px] border-r-transparent border-t-[20px] md:border-t-[30px] border-t-red-600 drop-shadow-lg"></div>
                 <div className="w-[40vw] h-[40vw] max-w-[180px] max-h-[180px] md:max-w-none md:max-h-none md:w-80 md:h-80 rounded-full border-4 md:border-8 border-yellow-500 bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.4)] md:shadow-[0_0_40px_rgba(255,255,255,0.4)] overflow-hidden flex items-center justify-center">
@@ -487,7 +582,6 @@ export default function Home() {
                 </div>
               </div>
               
-              {/* Spin Button */}
               {!isSpinning && !isHostTalking && !showQuestionModal && !showResetMsg && (
                 <button
                   onClick={initiateSpinSequence}
@@ -503,7 +597,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* Player 2 - Right */}
+            {/* Player 2 */}
             <div className="flex flex-col items-center justify-center w-[25%] md:w-1/6 animate-breathing z-10" style={{ animationDelay: "1s" }}>
               <div className="relative w-full flex justify-center">
                 <Image src="/player2.png" width={200} height={300} className="object-contain drop-shadow-2xl w-full h-auto max-w-[150px] md:max-w-[200px]" alt="Player 2" unoptimized />
@@ -520,29 +614,77 @@ export default function Home() {
               style={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
               className="z-50 w-full animate-in slide-in-from-bottom duration-500"
             >
-              <div className="w-full bg-white/95 backdrop-blur-3xl border-t-4 md:border-t-8 border-yellow-400 p-4 md:p-6 shadow-[0_-10px_60px_rgba(0,0,0,0.6)] flex flex-col items-center max-h-[60vh] overflow-y-auto">
-                <div className="absolute -top-4 md:-top-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-1 md:px-8 md:py-2 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm shadow-xl border-2 border-white">
-                  Question {currentQuestion + 1}
-                </div>
+              <div className={`w-full bg-white/95 backdrop-blur-3xl border-t-4 md:border-t-8 p-4 md:p-6 shadow-[0_-10px_60px_rgba(0,0,0,0.6)] flex flex-col items-center max-h-[70vh] overflow-y-auto ${currentQuestion === 5 ? "border-red-500 bg-red-50" : "border-yellow-400"}`}>
+                
+                {/* Timer Display for Question 6 (Fixed: Moved to negative top) */}
+                {currentQuestion === 5 && (
+                  <div
+                    className="absolute -top-5 right-2 md:-top-6 md:right-8 z-50 text-xl md:text-3xl font-mono font-bold border-2 md:border-4 rounded-lg px-2 py-1 md:px-4 md:py-2 bg-black/80 shadow-lg transition-colors duration-100"
+                    style={{
+                      color: getTimerColor(timerMs),
+                      borderColor: getTimerColor(timerMs)
+                    }}
+                  >
+                    {formatTime(timerMs)}
+                  </div>
+                )}
+
+                {/* --- QUESTION BADGE (Hidden on Question 6) --- */}
+                {currentQuestion !== 5 && (
+                  <div className="absolute -top-4 md:-top-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-1 md:px-8 md:py-2 rounded-full font-bold uppercase tracking-widest text-xs md:text-sm shadow-xl border-2 border-white">
+                    Question {currentQuestion + 1}
+                  </div>
+                )}
 
                 <div className="w-full max-w-6xl flex flex-col items-center gap-3 md:gap-6 mt-2">
-                  <h2 className="text-gray-900 text-lg md:text-4xl font-extrabold text-center leading-tight">
+                  <h2 className={`text-lg md:text-4xl font-extrabold text-center leading-tight ${currentQuestion === 5 ? "text-red-700 uppercase" : "text-gray-900"}`}>
                     {questions[currentQuestion].question}
                   </h2>
 
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 w-full">
-                    {questions[currentQuestion].answers.map((ans, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleAnswer(ans.correct)}
-                        className="w-full relative group overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-200 p-3 md:p-5 transition-all duration-200 hover:border-blue-500 hover:shadow-lg active:scale-95 flex items-center justify-center min-h-[60px] md:min-h-auto"
-                      >
-                        <span className="relative z-10 text-blue-900 font-bold text-sm md:text-xl text-center">
-                          {ans.text}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
+                  {currentQuestion === 5 ? (
+                    // Special layout for Question 6
+                    <div className="w-full flex flex-col items-center gap-4">
+                      <div className="grid grid-cols-2 gap-4 w-full">
+                        {questions[currentQuestion].answers.map((ans, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleAnswer(false)} // Dummy handler
+                            className="w-full relative group overflow-hidden rounded-xl bg-gray-200 border border-gray-400 p-5 cursor-default opacity-80"
+                          >
+                             <span className="relative z-10 text-gray-700 font-bold text-sm md:text-xl text-center">
+                              {ans.text}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      
+                      {showThirdBtn && (
+                         <button
+                         onClick={() => handleAnswer(true)}
+                         className="w-full animate-in zoom-in fade-in duration-500 relative overflow-hidden rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 border-2 border-green-300 p-5 shadow-2xl hover:scale-105 transition-transform"
+                       >
+                         <span className="relative z-10 text-white font-extrabold text-xl md:text-3xl text-center uppercase tracking-wider">
+                           ПОБЕЖДАЕТ ДРУЖБА!!!
+                         </span>
+                       </button>
+                      )}
+                    </div>
+                  ) : (
+                    // Standard layout for Q1-5
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 w-full">
+                      {questions[currentQuestion].answers.map((ans, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleAnswer(ans.correct)}
+                          className="w-full relative group overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-200 p-3 md:p-5 transition-all duration-200 hover:border-blue-500 hover:shadow-lg active:scale-95 flex items-center justify-center min-h-[60px] md:min-h-auto"
+                        >
+                          <span className="relative z-10 text-blue-900 font-bold text-sm md:text-xl text-center">
+                            {ans.text}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -550,7 +692,21 @@ export default function Home() {
         </div>
       )}
 
-      {/* --- STAGE 6: VIDEO (NEW) --- */}
+      {/* --- STAGE 6: CUSTOM VIDEO (BEFORE SPONGEBOB) --- */}
+      {stage === "custom-video" && (
+         <div className="fixed inset-0 z-50 bg-black flex items-center justify-center animate-in fade-in duration-1000">
+         <video
+           autoPlay
+           muted={false}
+           playsInline
+           onEnded={() => setStage("video")}
+           className="w-full h-full object-contain"
+           src="/custom_video.mp4"
+         />
+       </div>
+      )}
+
+      {/* --- STAGE 7: SPONGEBOB VIDEO --- */}
       {stage === "video" && (
         <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
           <video
@@ -562,12 +718,12 @@ export default function Home() {
             src="/final_video.mp4"
           />
           <div className="absolute bottom-10 left-0 right-0 text-center text-white text-2xl md:text-4xl font-bold bg-black/50 py-4 px-6 mx-auto w-fit rounded-full">
-            Иногда я Патрик, иногда ты Спанч Боб, иногда мы меняемся местами, но весь Бикини Боттом держится на нас ❤️
-          </div>
+            Иногда я Патрик, иногда ты Спанч Боб, иногда мы меняемся местами, но весь Бикини Боттом держится на нас ❤️ Я люблю тебя Рита.
+           </div>
         </div>
       )}
 
-      {/* --- STAGE 7: RESULT (SUCCESS) --- */}
+      {/* --- STAGE 8: RESULT (SUCCESS) --- */}
       {stage === "result" && (
         <div className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center z-10">
           {/* BACKGROUND PHOTOS */}
