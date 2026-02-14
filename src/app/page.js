@@ -198,7 +198,7 @@ export default function Home() {
     }
   }, [stage]);
 
-  // --- 3. FINAL MUSIC & PHOTO GENERATION ---
+  // --- 3. FINAL MUSIC & PHOTO GENERATION (now used for result stage only) ---
   useEffect(() => {
     if (stage === "result") {
       if (finalAudioRef.current) {
@@ -319,7 +319,8 @@ export default function Home() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        setStage("result");
+        // Game successfully won -> show video first, then result
+        setStage("video");
       }
     } else {
       if (buzzerAudioRef.current) {
@@ -549,7 +550,24 @@ export default function Home() {
         </div>
       )}
 
-      {/* --- STAGE 6: RESULT (SUCCESS) --- */}
+      {/* --- STAGE 6: VIDEO (NEW) --- */}
+      {stage === "video" && (
+        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+          <video
+            autoPlay
+            muted={false}
+            playsInline
+            onEnded={() => setStage("result")}
+            className="w-full h-full object-contain"
+            src="/final_video.mp4"
+          />
+          <div className="absolute bottom-10 left-0 right-0 text-center text-white text-2xl md:text-4xl font-bold bg-black/50 py-4 px-6 mx-auto w-fit rounded-full">
+            Иногда я Патрик, иногда ты Спанч Боб, иногда мы меняемся местами, но весь Бикини Боттом держится на нас ❤️
+          </div>
+        </div>
+      )}
+
+      {/* --- STAGE 7: RESULT (SUCCESS) --- */}
       {stage === "result" && (
         <div className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center z-10">
           {/* BACKGROUND PHOTOS */}
@@ -588,7 +606,7 @@ export default function Home() {
           {/* Center Card */}
           <div className="z-20 text-center bg-white/95 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-2xl border-4 border-pink-300 max-w-5xl mx-4 relative w-[90%] md:w-auto">
             <h1 className="text-3xl md:text-6xl font-bold text-pink-600 mb-2 md:mb-4">Приз в студию! 💖</h1>
-            <p className="text-lg md:text-2xl text-gray-700 mb-4 md:mb-8">Мы идеальная пара! Просто посмотри на это!</p>
+            <p className="text-lg md:text-2xl text-gray-700 mb-4 md:mb-8"> Ты прошла игру! Мы идеальная пара! Просто посмотри на это!</p>
 
             <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-4 md:mb-8 max-h-[30vh] overflow-y-auto md:overflow-visible">
               {Array.from({ length: 15 }).map((_, i) => (
