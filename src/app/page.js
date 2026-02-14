@@ -37,7 +37,7 @@ const questions = [
     answers: [
       { text: "Лиса", correct: false },
       { text: "Ирбис", correct: false },
-      { text: "Ксюша", correct: false },
+      { text: "Лыси попи!", correct: false },
       { text: "Паша", correct: true },
     ],
   },
