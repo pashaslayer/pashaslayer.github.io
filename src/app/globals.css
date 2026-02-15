@@ -1,30 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) translateX(-5vw);
+  }
+  100% {
+    transform: translateY(100vh) translateX(5vw);
+  }
+}
+
+@keyframes sway-left-to-right {
+  0% {
+    transform: translateY(-10vh) translateX(-10vw);
+  }
+  100% {
+    transform: translateY(100vh) translateX(10vw);
+  }
+}
+
+@keyframes sway-right-to-left {
+  0% {
+    transform: translateY(-10vh) translateX(10vw);
+  }
+  100% {
+    transform: translateY(100vh) translateX(-10vw);
+  }
+}
+
+
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: black;
-  overflow: hidden; /* Prevent scrolling usually */
+  background-color: #1a1a1a;
+  color: #9f86c0;
+  font-family: 'Permanent Marker', cursive;
+  /* Hide the default scrollbar for Webkit browsers (Chrome, Safari) */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide the default scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide the default scrollbar for IE/Edge */
+  -ms-overflow-style: none; 
 }
 
-/* The Matrix/Undertale style text cursor */
-.typing-cursor::after {
-  content: '▋';
-  animation: blink 1s step-start infinite;
+/* Smooth scrolling for better user experience */
+html {
+  scroll-behavior: smooth;
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
+/* Custom styles for the dropdown menu */
+.group:hover .group-hover\:visible {
+  visibility: visible;
+}
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+/* Blog Content Styling */
+.prose {
+  max-width: none;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #9f86c0;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 1.8rem;
+  border-bottom: 2px solid #9f86c0;
+  padding-bottom: 0.5rem;
+  margin-top: 3rem;
+}
+
+.prose p {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.prose ul, .prose ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose code {
+  background-color: rgba(232, 100, 79, 0.1);
+  color: #9f86c0;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: 'Geist Mono', monospace;
+}
+
+.prose pre {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid #9f86c0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: #9f86c0;
+}
+
+/* Custom scrollbar for blog content */
+.prose::-webkit-scrollbar {
+  width: 8px;
+}
+
+.prose::-webkit-scrollbar-track {
+  background: rgba(232, 100, 79, 0.1);
+}
+
+.prose::-webkit-scrollbar-thumb {
+  background: #9f86c0;
+  border-radius: 4px;
 }
